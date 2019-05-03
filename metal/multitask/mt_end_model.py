@@ -111,7 +111,7 @@ class MTEndModel(MTClassifier, EndModel):
                 input_modules,
                 "input",
                 self.config["input_layer_config"],
-                output_dim=output_dim,
+                output_dim = self.config["layer_out_dims"][0],
             )
 
         return input_layer
@@ -297,7 +297,7 @@ class MTEndModel(MTClassifier, EndModel):
         """Returns the loss function to use in the train_model routine"""
         criteria = self.criteria.to(self.config["device"])
         loss_fn = lambda X, Y: sum(
-            criteria(Y_tp, Y_t) for Y_tp, Y_t in zip(self.forward(X), Y)
+            criteria(Y_tp, Y_t) for Y_tp, Y_t in zip(self.forward(X), self._preprocess_Y(Y, self.k))
         )
         return loss_fn
 
